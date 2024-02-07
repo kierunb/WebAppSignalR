@@ -12,11 +12,9 @@ public class ChatHub : Hub
     public async Task SendMessage(string user, string message)
     {
         // context
-
         var context = this.Context;
         var connectionId = context.ConnectionId;
         var userIdentifier = context.UserIdentifier;
-        
         
         await Clients.All.SendAsync("ReceiveMessage", user, $" (Clients.All) {message}");
 
@@ -48,7 +46,6 @@ public class ChatHub : Hub
     public Task PingGroup(string groupName, string message) 
         => Clients.Group(groupName).SendAsync("PingHandler", message);
 }
-
 
 
 // 1)   Strongly Typed Hub - a drawback of using SendAsync is that it relies on a string to specify the client method to be called.

@@ -6,6 +6,20 @@ var connection = new signalR.HubConnectionBuilder()
     })
     .withAutomaticReconnect()
     .build();
+
+// open connection
+connection.start().then(function () {
+
+    // enable buttons
+    document.getElementById("sendButton").disabled = false;
+    document.getElementById("joinGroupButton").disabled = false;
+    document.getElementById("pingGroupButton").disabled = false;
+}).catch(function (err) {
+    return console.error(err.toString());
+});
+
+
+
 let groupName = "group1";
 
 //Disable the send button until connection is established.
@@ -13,6 +27,7 @@ document.getElementById("sendButton").disabled = true;
 document.getElementById("joinGroupButton").disabled = true;
 document.getElementById("pingGroupButton").disabled = true;
 
+// signalR event handlers
 connection.on("ReceiveMessage", function (user, message) {
     var li = document.createElement("li");
     document.getElementById("messagesList").appendChild(li);
@@ -30,16 +45,8 @@ connection.on("PingHandler", (message) => {
     li.textContent = `Group: '${groupName}' says ${message}`;
 });
 
-connection.start().then(function () {
 
-    // enable buttons
-    document.getElementById("sendButton").disabled = false;
-    document.getElementById("joinGroupButton").disabled = false;
-    document.getElementById("pingGroupButton").disabled = false;
-}).catch(function (err) {
-    return console.error(err.toString());
-});
-
+// UI event handlers
 document.getElementById("sendButton").addEventListener("click", function (event) {
     var user = document.getElementById("userInput").value;
     var message = document.getElementById("messageInput").value;
