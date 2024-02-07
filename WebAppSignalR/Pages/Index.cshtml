@@ -1,0 +1,31 @@
+﻿@page
+<div class="container">
+    <div class="row p-1">
+        <div class="col-1">User</div>
+        <div class="col-5"><input type="text" class="form-control" id="userInput" /></div>
+    </div>
+    <div class="row p-1">
+        <div class="col-1">Message</div>
+        <div class="col-5"><input type="text" class="form-control" id="messageInput" /></div>
+    </div>
+    <div class="row p-1">
+        <div class="col-6 text-end">
+            <input class="btn btn-primary" type="button" id="sendButton" value="Send Message" />
+            <input class="btn btn-primary" type="button" id="joinGroupButton" value="Join Group" />
+            <input class="btn btn-primary" type="button" id="pingGroupButton" value="Ping Group" />
+        </div>
+    </div>
+    <div class="row p-1">
+        <div class="col-6">
+            <hr />
+        </div>
+    </div>
+    <div class="row p-1">
+        <div class="col-6">
+            <ul id="messagesList"></ul>
+        </div>
+    </div>
+</div>
+
+<script src="~/js/signalr.js"></script>
+<script src="~/js/chat.js"></script>
