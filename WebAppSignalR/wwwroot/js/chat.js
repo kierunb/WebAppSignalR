@@ -1,6 +1,11 @@
 "use strict";
 
-var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
+var connection = new signalR.HubConnectionBuilder()
+    .withUrl("/chatHub", {
+        transport: signalR.HttpTransportType.WebSockets | signalR.HttpTransportType.ServerSentEvents
+    })
+    .withAutomaticReconnect()
+    .build();
 let groupName = "group1";
 
 //Disable the send button until connection is established.
