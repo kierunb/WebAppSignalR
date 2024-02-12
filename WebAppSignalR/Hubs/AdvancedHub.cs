@@ -15,7 +15,7 @@ public interface IAdvancedHubClient
 public record ChatMessage(string User, string Message);
 
 
-[Authorize]
+//[Authorize]
 public class AdvancedHub(ILogger<AdvancedHub> logger) : Hub<IAdvancedHubClient>
 {
 
@@ -38,7 +38,7 @@ public class AdvancedHub(ILogger<AdvancedHub> logger) : Hub<IAdvancedHubClient>
     }
     public async override Task OnDisconnectedAsync(Exception exception)
     {
-        logger.LogInformation($"OnDisconnectedAsync: {exception.Message}");
+        logger.LogInformation($"OnDisconnectedAsync: {exception?.Message}");
         await base.OnDisconnectedAsync(exception);
     }
 

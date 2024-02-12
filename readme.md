@@ -45,5 +45,7 @@
 - [Authentication and authorization](https://learn.microsoft.com/en-us/aspnet/core/signalr/authn-and-authz?view=aspnetcore-8.0)
 - [Security](https://learn.microsoft.com/en-us/aspnet/core/signalr/security?view=aspnetcore-8.0)
 - [MessagePack Hub Protocol](https://learn.microsoft.com/en-us/aspnet/core/signalr/messagepackhubprotocol?view=aspnetcore-8.0)
+- [Streaming](https://learn.microsoft.com/en-us/aspnet/core/signalr/streaming?view=aspnetcore-8.0)
+- [Logging and DIagnostics](https://learn.microsoft.com/en-us/aspnet/core/signalr/diagnostics?view=aspnetcore-8.0)
 - [SignalR vs SignalR Core](https://learn.microsoft.com/en-us/aspnet/core/signalr/version-differences?view=aspnetcore-8.0)
 - [SignalR vs gRPC](https://scientificprogrammer.net/2022/07/25/signalr-vs-grpc-on-asp-net-core-which-one-to-choose/)
