@@ -1,16 +1,17 @@
 ﻿using Coravel.Invocable;
 using Microsoft.AspNetCore.SignalR;
-using WebAppSignalR.Hubs;
+using SignalRChat.Hubs;
 
 namespace WebAppSignalR.Jobs;
 
 public class TestJob(
     ILogger<TestJob> logger, 
-    IHubContext<NotificationHub> hubContext) : IInvocable
+    IHubContext<ChatHub> hubContext) : IInvocable
 {
     public async Task Invoke()
     {
         logger.LogInformation("TestJob invoked.");
-        await Task.CompletedTask;
+
+        await hubContext.Clients.All.SendAsync("ReceiveMessage", "Scheduler", ">>> TestJob invoked.");
     }
 }

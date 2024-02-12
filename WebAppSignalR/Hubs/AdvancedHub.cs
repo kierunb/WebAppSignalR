@@ -9,6 +9,8 @@ namespace WebAppSignalR.Hubs;
 public interface IAdvancedHubClient
 {
     Task HandleMessage(string message);
+    Task HandleComplexMessage(string message);
+    Task<string> WaitForMessageHandler(string connectionId);
 }
 
 // 2)   Object Parameters (API Design) - compatibility after changes, primitive parameters can cause pain
@@ -18,22 +20,41 @@ public record ChatMessage(string User, string Message);
 //[Authorize]
 public class AdvancedHub(ILogger<AdvancedHub> logger) : Hub<IAdvancedHubClient>
 {
-
-    public static int InvokeCount { get; set; } = 0;
-
     //[Authorize(Roles = "Admin")]
     public async Task PrintOnConsole(string message)
-    {
-        InvokeCount++;
-        
+    { 
         logger.LogInformation(message);
 
         await Clients.All.HandleMessage($"Message {message} handled");
     }
 
+    // change the hub method name
+    // [HubMethodName("SendMessageToUser")]
+    public async Task<string> WaitForMessage(string connectionId)
+    {
+        var message = await Clients.Client(connectionId).WaitForMessageHandler(Context.ConnectionId);
+        return message;
+    }
+
+    public async Task InvokeComplexType(ChatMessage chatMessage)
+    {
+        var message = $"Complex message received: {chatMessage.User}, {chatMessage.Message}";
+        logger.LogInformation(message);
+        await Clients.Caller.HandleMessage(message);
+    }
+
+    // If a HubException is thrown in a hub method, SignalR sends the entire exception message to the client, unmodified
+    public Task ThrowException()
+        => throw new HubException("This error will be sent to the client!");
+
+    // Lifecycle event handlers
     public async override Task OnConnectedAsync()
     {
         logger.LogInformation("OnConnectedAsync");
+
+        // adding current conenction to a group
+        //await Groups.AddToGroupAsync(Context.ConnectionId, "SignalR Users");
+
         await base.OnConnectedAsync();
     }
     public async override Task OnDisconnectedAsync(Exception exception)

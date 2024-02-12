@@ -5,6 +5,10 @@
     <div class="row">
         <div class="col">
             <button class="btn btn-primary" id="btnInvokeHubMethod">Invoke Hub Method</button>
+
+            <button class="btn btn-primary" id="btnInvokeComplexType">Invoke with complex type</button>
+
+            <button class="btn btn-primary" id="btnWaitForMessage">WaitForMessage</button>
         </div>
     </div>
     <hr />
@@ -19,17 +23,19 @@
     <script>
 
         $(document).ready(() => {
+            let currentDate = new Date();
 
             const connection = new signalR.HubConnectionBuilder()
                 .withUrl("/advancedHub", {
                     transport: signalR.HttpTransportType.WebSockets | signalR.HttpTransportType.ServerSentEvents
                 })
-                //.withHubProtocol(new MessagePackHubProtocol())
+                //.withHubProtocol(new MessagePackHubProtocol()) // default: JSON 
                 //.configureLogging(signalR.LogLevel.Trace)
                 //.configureLogging(new CustomLogger())
                 .withAutomaticReconnect()
                 //.withAutomaticReconnect(new CustomRetryPolicy())
                 .build();
+
 
             // open connection
             connection.start().then(() => {
@@ -46,11 +52,26 @@
                 $('#textArea').val($('#textArea').val() + message + '\n');
             });
 
+            connection.on("HandleComplexMessage", (message) => {
+                console.log(message);
+                $('#textArea').val($('#textArea').val() + message + '\n');
+            });
+
+            connection.on("WaitForMessageHandler", async () => {
+                let promise = new Promise((resolve, reject) => {
+                    setTimeout(() => {
+                        resolve("message");
+                    }, 100);
+                });
+                return promise;
+            });
+
+            // connection lifecycle events
             connection.onreconnecting((error) => {
                 $('#textArea').css('background-color', 'Khaki');
             });
 
-            connection.onreconnected((connectionId: string) => {
+            connection.onreconnected((connectionId) => {
                 $('#textArea').css('background-color', 'Khaki');
 
                 setTimeout(() => {
@@ -63,13 +84,26 @@
             });
 
 
-            // get current date
+            // button handlers
+            $('#btnInvokeHubMethod').click(() => {       
+                let message = `Date from server ${currentDate.toLocaleString()}`;
+                connection.invoke("PrintOnConsole", message); 
+            });
 
-            let currentDate = new Date();
-            let message = `Date from server ${currentDate.toLocaleString()}`;
+            $('#btnInvokeComplexType').click(() => {
+                let complexMessage = {
+                    user: "John",
+                    message: "Hi there!"
+                };
+                connection.invoke("InvokeComplexType", complexMessage);
+            });
 
-            $('#btnInvokeHubMethod').click(() => { connection.invoke("PrintOnConsole", message); });
-
+            $('#btnWaitForMessage').click(() => {
+                connection.invoke("WaitForMessage", connection.connectionId).then((message) => {
+                    console.log(message);
+                    $('#textArea').val($('#textArea').val() + message + '\n');
+                });
+            });
         });
 
     </script>

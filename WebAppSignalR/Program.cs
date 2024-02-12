@@ -18,6 +18,22 @@ builder.Services.AddAuthorization(options =>
 
 builder.Services.AddRazorPages();
 
+
+// If JavaScript code is hosted on a different domain from the SignalR app,
+// CORS middleware must be enabled to allow the JavaScript to connect to the SignalR app
+#region CORS configuration
+//builder.Services.AddCors(options =>
+//{
+//    options.AddPolicy(name: MyAllowSpecificOrigins,
+//                      policy =>
+//                      {
+//                          policy.WithOrigins("http://example.com");
+//                          policy.WithMethods("GET", "POST");
+//                          policy.AllowCredentials();
+//                      });
+//}); 
+#endregion
+
 // Scheduler
 builder.Services.AddScheduler();
 builder.Services.AddTransient<TestJob>();
@@ -25,8 +41,9 @@ builder.Services.AddTransient<TestJob>();
 // SignalR
 builder.Services.AddSignalR(hubOptions =>
 {
+    // global filter registration
     hubOptions.AddFilter<CustomHubFilter>();
-}); //.AddMessagePackProtocol();
+}); //.AddMessagePackProtocol(); // message pack protocol -> works for msgpack and json clients 
 
 builder.Services.AddSingleton<CustomHubFilter>();
 builder.Services.AddSingleton<IUserIdProvider, SignalRUserIdProvider>();
@@ -44,7 +61,7 @@ app.Services.UseScheduler(scheduler =>
     //)
     //.EveryMinute();
 
-    scheduler.Schedule<TestJob>().EveryMinute();
+    scheduler.Schedule<TestJob>().EverySeconds(5);// .EveryMinute();
 }); 
 #endregion
 

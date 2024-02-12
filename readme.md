@@ -6,6 +6,8 @@
 - Samples:
     - [Official Samples](https://github.com/aspnet/SignalR-samples)
     - [SignalR Mastery Samples](https://github.com/1kevgriff/SignalR-Mastery)
+- [SignalR ASP.NET 4.x](https://learn.microsoft.com/en-us/aspnet/signalr/overview/getting-started/)
+- [SignalR ASP.NET 4.x Sample](https://learn.microsoft.com/en-us/aspnet/signalr/overview/getting-started/real-time-web-applications-with-signalr)
 
 ## Topics
 
@@ -30,6 +32,11 @@
 - [Users and Groups](https://learn.microsoft.com/en-us/aspnet/core/signalr/groups?view=aspnetcore-8.0)
 - [API Design Considerations](https://learn.microsoft.com/en-us/aspnet/core/signalr/api-design?view=aspnetcore-8.0)
 - [Hub Filters](https://learn.microsoft.com/en-us/aspnet/core/signalr/hub-filters?view=aspnetcore-8.0)
+- [SignalR Background Services](https://learn.microsoft.com/en-us/aspnet/core/signalr/background-services?view=aspnetcore-8.0)
+
+### Guides and Practices
+- [Mapping SignalR Users to Connections](https://learn.microsoft.com/en-us/aspnet/signalr/overview/guide-to-the-api/mapping-users-to-connections)
+- [Performance](https://learn.microsoft.com/en-us/aspnet/signalr/overview/performance/signalr-performance)
 
 ### Clients
 
@@ -38,6 +45,7 @@
 ### Hosting and Scaling
 
 - [Overview](https://learn.microsoft.com/en-us/aspnet/core/signalr/scale?view=aspnetcore-8.0)
+- [Scale out](https://learn.microsoft.com/en-us/aspnet/signalr/overview/performance/scaleout-in-signalr)
 - [Redis backplane](https://learn.microsoft.com/en-us/aspnet/core/signalr/redis-backplane?view=aspnetcore-8.0)
 
 ### Advanced Topics
