@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.SignalR;
 using WebAppSignalR.Hubs;
 
 namespace SignalRChat.Hubs;
@@ -7,14 +8,25 @@ namespace SignalRChat.Hubs;
 // https://learn.microsoft.com/en-us/aspnet/core/signalr/hubs?view=aspnetcore-8.0
 // https://learn.microsoft.com/en-us/aspnet/core/signalr/api-design?view=aspnetcore-8.0
 
+
+[Authorize]
 public class ChatHub : Hub
 {
+    
     public async Task SendMessage(string user, string message)
     {
         // context
         var context = this.Context;
         var connectionId = context.ConnectionId;
-        var userIdentifier = context.UserIdentifier;
+
+        // for windows auth requires IUserIdProvider implementation
+        var userIdentifier = context.UserIdentifier ?? "Unknown user";
+        //var userIdentityName = context.User?.Identity?.Name ?? "Unknown user";
+
+        var httpContext = context.GetHttpContext();
+
+        // data will persist for the connection across different hub method invocations
+        var items = context.Items;
         
         await Clients.All.SendAsync("ReceiveMessage", user, $" (Clients.All) {message}");
 
@@ -22,7 +34,7 @@ public class ChatHub : Hub
 
         // authentication is required for this method
         // SignalR uses ClaimTypes.NameIdentifier from the ClaimsPrincipal
-        await Clients.User(user).SendAsync("ReceiveMessage", user, $" (Clients.User) {message}");
+        await Clients.User(userIdentifier).SendAsync("ReceiveMessage", userIdentifier, $" (Clients.User) {message}");
     }
 
     public async Task SendMessageToCaller(string user, string message)
@@ -45,38 +57,6 @@ public class ChatHub : Hub
 
     public Task PingGroup(string groupName, string message) 
         => Clients.Group(groupName).SendAsync("PingHandler", message);
-}
-
-
-// 1)   Strongly Typed Hub - a drawback of using SendAsync is that it relies on a string to specify the client method to be called.
-//      This leaves code open to runtime errors if the method name is misspelled or missing from the client.
-
-public interface IChatClient
-{
-    Task ReceiveMessage(string user, string message);
-}
-
-// 2)   Object Parameters (API Design) - compatibility after changes, primitive parameters can cause pain
-public record ChatMessage(string User, string Message);
-
-
-public class StronglyTypedChatHub : Hub<IChatClient>
-{
-
-    // [HubMethodName("SendMessageToUser")] <- change the name of the hub method
-    public async Task SendMessage(string user, string message)
-        => await Clients.All.ReceiveMessage(user, message);
-
-    public async Task SendMessage(ChatMessage chatMessage)
-        => await Clients.All.ReceiveMessage(chatMessage.User, chatMessage.Message);
-
-    // js/ts call: connection.invoke("SendMessage", { param1: "value1", param2: "value2" });
-
-    public async Task SendMessageToCaller(string user, string message)
-        => await Clients.Caller.ReceiveMessage(user, message);
-
-    public async Task SendMessageToGroup(string user, string message)
-        => await Clients.Group("SignalR Users").ReceiveMessage(user, message);
 }
 
 

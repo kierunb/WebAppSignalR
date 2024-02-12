@@ -8,6 +8,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{AB0C3124-8A28-4F6A-9B6C-B0DFE7B623F2}"
 	ProjectSection(SolutionItems) = preProject
 		readme.md = readme.md
+		signalr-samples.md = signalr-samples.md
 	EndProjectSection
 EndProject
 Global

@@ -1,0 +1,76 @@
+﻿@page
+@model WebAppSignalR.Pages.ScenariosModel
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <button class="btn btn-primary" id="btnInvokeHubMethod">Invoke Hub Method</button>
+        </div>
+    </div>
+    <hr />
+    <div class="row">
+        <div class="col">
+            <textarea id="textArea" rows="10" class="form-control"></textarea>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+
+        $(document).ready(() => {
+
+            const connection = new signalR.HubConnectionBuilder()
+                .withUrl("/advancedHub", {
+                    transport: signalR.HttpTransportType.WebSockets | signalR.HttpTransportType.ServerSentEvents
+                })
+                //.withHubProtocol(new MessagePackHubProtocol())
+                //.configureLogging(signalR.LogLevel.Trace)
+                //.configureLogging(new CustomLogger())
+                .withAutomaticReconnect()
+                //.withAutomaticReconnect(new CustomRetryPolicy())
+                .build();
+
+            // open connection
+            connection.start().then(() => {
+                console.log("Connection to 'AdvancedHub' ready.");
+                $('#textArea').css('background-color', 'PaleGreen');
+            })
+            .catch( (err) => {
+                return console.error(err.toString());
+            });
+
+            // handlers
+            connection.on("HandleMessage", (message) => {
+                console.log(message);
+                $('#textArea').val($('#textArea').val() + message + '\n');
+            });
+
+            connection.onreconnecting((error) => {
+                $('#textArea').css('background-color', 'Khaki');
+            });
+
+            connection.onreconnected((connectionId: string) => {
+                $('#textArea').css('background-color', 'Khaki');
+
+                setTimeout(() => {
+                    $('#textArea').css('background-color', 'PaleGreen');
+                }, 5000);
+            });
+
+            connection.onclose((error) => {
+                $('#textArea').css('background-color', 'DarkSalmon');
+            });
+
+
+            // get current date
+
+            let currentDate = new Date();
+            let message = `Date from server ${currentDate.toLocaleString()}`;
+
+            $('#btnInvokeHubMethod').click(() => { connection.invoke("PrintOnConsole", message); });
+
+        });
+
+    </script>
+}

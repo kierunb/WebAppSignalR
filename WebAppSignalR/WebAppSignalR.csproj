@@ -7,7 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\lib\microsoft\signalr\dist\browser\" />
+    <PackageReference Include="Coravel" Version="5.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Negotiate" Version="8.0.1" />
+	  
   </ItemGroup>
 
 </Project>
